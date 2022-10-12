@@ -1,0 +1,38 @@
+name: auto-release
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+   runs-on: ubuntu-18.04
+   steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - name: 📦 INSTALL NODE LTS
+      uses: actions/setup-node@v3
+      with:
+        node-version: lts/*
+    - name: ✏️ CONFIGURACIONES PARA FIRMAR COMMITS
+      run: |
+          git config --local user.name "GitActionsBot"
+          git config --local user.email "gitbot@git.com"
+    - name: 🚛 CARGANDO DEPENDENCIAS
+      run: npm install
+    - name: 📝 CREANDO RELEASE
+      run: npm run release
+    - name: 🔃 PREPARANDO EL PUSH PARA SUBIR EL RELEASE
+      run: |
+          git fetch
+          git pull
+          git push
+          git push origin --follow-tags
+    - name: 🔄 SINCRONIZANDO RAMAS
+      run: |
+          git checkout develop
+          git fetch
+          git pull
+          git merge --no-ff main -m "Auto-merge master back tos develop"
+          git push

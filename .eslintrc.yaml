@@ -1,0 +1,42 @@
+env:
+  browser:
+    true
+parser:
+  "@typescript-eslint/parser"
+plugins:
+  - prettier
+  - "@typescript-eslint"
+extends:
+  - next/core-web-vitals
+  - plugin:@next/next/recommended
+  - eslint:recommended
+  - next
+  - plugin:prettier/recommended
+rules:
+  prettier/prettier:
+    error
+  react-hooks/rules-of-hooks:
+    error
+  react-hooks/exhaustive-deps:
+    warn
+  react/jsx-uses-react:
+    error
+  react/jsx-uses-vars:
+    error
+  react/jsx-filename-extension:
+    - 1
+    - extensions:
+      - ".js"
+      - ".ts"
+      - ".jsx"
+      - ".tsx"
+  react/jsx-props-no-spreading:
+    - off
+    - custom:
+        ignore
+  react/react-in-jsx-scope:
+    off
+  module-resolver/use-alias:
+    0
+  "@next/next/no-html-link-for-pages":
+    off

@@ -1,0 +1,49 @@
+name: create-labels
+on:
+  create:
+    branches:
+      - develop
+env:
+  EXTRA_PATH: ./extras/createLabels/
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 📦 INSTALL NODE LTS
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+      - name: 🚛 CARGANDO DEPENDENCIAS
+        run: |
+          cd $EXTRA_PATH
+          npm init -y
+          npm i isomorphic-fetch
+      - name: 🏗 CREANDO ETIQUETAS
+        run: |
+          cd $EXTRA_PATH
+          node ./index.js ${{ secrets.GITHUB_TOKEN }} ${{ github.repository_owner }} ${{ github.repository }}
+      - name: ⚙️ CONFIGURANDO GIT
+        run: |
+          git config --local user.name "GitActionsBot"
+          git config --local user.email "gitbot@git.com"
+      - name: ⭕️ BORRANDO EXTRAS
+        run: |
+          git checkout develop
+          git rm -r $EXTRA_PATH
+          rm -R $EXTRA_PATH/package.json
+          git add -A
+          git status
+          git commit -m "chore: Eliminando carpeta"
+          git push
+      - name: 🛠 CREANDO RAMA MAIN
+        run: |
+          git checkout develop
+          git fetch
+          git pull
+          git checkout -b main
+          git pull origin develop
+          git push --set-upstream origin main
